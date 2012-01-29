@@ -117,4 +117,4 @@ if len(argv) > 1:
 	win = MainWindow(argv[1])
 	pyglet.app.run()
 else:
-	print "usage: pathetic filename"
+	print "usage: pathetic.py filename"
