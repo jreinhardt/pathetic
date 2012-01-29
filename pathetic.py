@@ -2,7 +2,6 @@
 from sys import argv
 import numpy as np
 import pyglet
-from pyglet.gl import *
 
 class Layer:
 	def __init__(self):
@@ -72,10 +71,6 @@ class MainWindow(pyglet.window.Window):
 	def __init__(self,filename):
 		pyglet.window.Window.__init__(self)
 
-		glMatrixMode(GL_PROJECTION)
-		glLoadIdentity()
-		gluOrtho2D(0, self.width, 0, self.height)
-
 		self.parser = GCodeParser()
 		fid = open(filename)
 		self.parser.parse(fid)
@@ -89,7 +84,6 @@ class MainWindow(pyglet.window.Window):
 	def on_draw(self):
 		self.clear()
 		moves = self.parser.layers[self.current_layer].moves
-		color = [255,255,255]
 		for m in moves:
 			coords = tuple((p[i] - self.parser.min[i])*self.scale for p in [m.orig,m.dest] for i in range(2))
 			color = (255,255,255)
