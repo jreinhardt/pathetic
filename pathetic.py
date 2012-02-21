@@ -24,10 +24,11 @@ class Layer:
 		self.moves = []
 
 class Move:
-	def __init__(self,orig,dest,extruding):
+	def __init__(self,orig,dest,extruding,tool):
 		self.orig = np.array(orig)
 		self.dest = np.array(dest)
 		self.extruding = extruding
+		self.tool = tool
 	def __str__(self):
 		return str(self.orig) + " " + str(self.dest)
 
@@ -41,6 +42,7 @@ class GCodeParser:
 		self.layers.append(Layer())
 		cur = np.zeros(3)
 		nxt = np.zeros(3)
+		tool = None
 		for line in fid:
 			#strip comments and split
 			pieces = line.split(";")
@@ -77,10 +79,15 @@ class GCodeParser:
 							self.layers.append(Layer())
 					elif piece[0] == "E":
 						extruding = True
-				self.layers[-1].moves.append(Move(cur,nxt,extruding))
+				self.layers[-1].moves.append(Move(cur,nxt,extruding,tool))
 				self.max = np.maximum(self.max, nxt)
 				self.min = np.minimum(self.min, nxt)
 				cur = nxt.copy()
+			elif pieces[0] == "T0":
+				tool = 0
+			elif pieces[0] == "T1":
+				tool = 1
+				
 		self.size = (self.max - self.min).max()
 
 class MainWindow(pyglet.window.Window):
@@ -97,6 +104,8 @@ class MainWindow(pyglet.window.Window):
 
 		self.current_layer = 0
 
+		self.tool_colors = [(255,0,0),(0,255,0)]
+
 	def on_draw(self):
 		self.clear()
 		moves = self.parser.layers[self.current_layer].moves
@@ -104,7 +113,7 @@ class MainWindow(pyglet.window.Window):
 			coords = tuple((p[i] - self.parser.min[i])*self.scale for p in [m.orig,m.dest] for i in range(2))
 			color = (255,255,255)
 			if m.extruding:
-				color = (255,0,0)
+				color = self.tool_colors[m.tool]
 			colors = tuple(color[i] for j in range(2)  for i in range (3))
 			pyglet.graphics.draw(2,pyglet.gl.GL_LINES,("v2f",coords),("c3B",colors))
 
