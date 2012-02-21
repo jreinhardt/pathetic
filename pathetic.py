@@ -122,6 +122,14 @@ class MainWindow(pyglet.window.Window):
 		self.current_layer = max(0,self.current_layer)
 		self.current_layer = min(len(self.parser.layers)-1,self.current_layer)
 
+	def on_key_press(self,symbol, mods):
+		if symbol == pyglet.window.key.UP:
+			self.current_layer += 1
+			self.current_layer = min(len(self.parser.layers)-1,self.current_layer)
+		elif symbol == pyglet.window.key.DOWN:
+			self.current_layer -= 1
+			self.current_layer = max(0,self.current_layer)
+
 if len(argv) > 1:
 	win = MainWindow(argv[1])
 	pyglet.app.run()
