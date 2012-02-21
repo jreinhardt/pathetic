@@ -5,10 +5,20 @@ Pathetic
 Summary
 =======
 
-Pathetic is a simple viewer for RepRap [#reprap]_ GCode [#gcode]_ written in
-python [#python]_, using numpy [#numpy]_ and pyglet [#pyglet]_. It is also an
-opportunity for me to learn a bit OpenGL.
+Pathetic is a very simple viewer for RepRap [#reprap]_ GCode [#gcode]_ written
+in python [#python]_, using numpy [#numpy]_ and pyglet [#pyglet]_. It is also
+an opportunity for me to learn a bit OpenGL.
 
+Usage
+=====
+
+Pathetic is started from the commandline with the name of the GCode file as
+first argument.
+
+One can change between the layer using the arrow keys or a mousewheel.
+
+Non-extruding moves are shown white, primary extruder red, secondary extruder
+green.
 
 Ideas for Features
 ==================
