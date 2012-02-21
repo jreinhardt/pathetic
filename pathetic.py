@@ -106,8 +106,11 @@ class MainWindow(pyglet.window.Window):
 
 		self.tool_colors = [(255,0,0),(0,255,0)]
 
+		self.label = pyglet.text.Label("Layer: %d" % self.current_layer)
+
 	def on_draw(self):
 		self.clear()
+		#draw paths
 		moves = self.parser.layers[self.current_layer].moves
 		for m in moves:
 			coords = tuple((p[i] - self.parser.min[i])*self.scale for p in [m.orig,m.dest] for i in range(2))
@@ -116,19 +119,23 @@ class MainWindow(pyglet.window.Window):
 				color = self.tool_colors[m.tool]
 			colors = tuple(color[i] for j in range(2)  for i in range (3))
 			pyglet.graphics.draw(2,pyglet.gl.GL_LINES,("v2f",coords),("c3B",colors))
+		#draw stats
+		self.label.draw()
 
-	def on_mouse_scroll(self,x,y,scroll_x,scroll_y):
-		self.current_layer += scroll_y
+	def _change_layer(self,change):
+		self.current_layer += change
 		self.current_layer = max(0,self.current_layer)
 		self.current_layer = min(len(self.parser.layers)-1,self.current_layer)
+		self.label.text = "Layer: %d" % self.current_layer
+
+	def on_mouse_scroll(self,x,y,scroll_x,scroll_y):
+		self._change_layer(scroll_y)
 
 	def on_key_press(self,symbol, mods):
 		if symbol == pyglet.window.key.UP:
-			self.current_layer += 1
-			self.current_layer = min(len(self.parser.layers)-1,self.current_layer)
+			self._change_layer(1)
 		elif symbol == pyglet.window.key.DOWN:
-			self.current_layer -= 1
-			self.current_layer = max(0,self.current_layer)
+			self._change_layer(-1)
 
 if len(argv) > 1:
 	win = MainWindow(argv[1])
